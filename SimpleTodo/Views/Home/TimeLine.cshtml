@@ -1,0 +1,76 @@
+﻿@model SimpleTodo.TodoList
+<html>
+<head>
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <script src="~/layui/layui.js"></script>
+    <style type="text/css">
+        /*.layui-timeline-title {
+            line-height: 32px;
+        }*/
+
+
+    </style>
+</head>
+<body>
+    <ul class="layui-timeline">
+
+
+        @if (Model.DataList == null || Model.DataList.Count == 0)
+        {
+            <li class="layui-timeline-item">
+                <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                <div class="layui-timeline-content layui-text">
+                    <h3 class="layui-timeline-title">无记录</h3>
+                </div>
+            </li>
+        }
+        else
+        {
+            foreach (var item in Model.DataList)
+            {
+                <li class="layui-timeline-item">
+                    <i class="layui-icon layui-timeline-axis">&#xe63f;</i>
+                    <div class="layui-timeline-content layui-text">
+                        <h3 class="layui-timeline-title" name="timestampTime">@item.CreateTime</h3>
+                        <p name="content">@item.Content</p>
+                    </div>
+                </li>
+            }
+        }
+    </ul>
+</body>
+</html>
+<script>
+    layui.use('jquery', function () {
+        var $ = layui.$;
+        $(function () {
+            $("h3[name='timestampTime']").each(
+                function () {
+                    var localTime = ChangeTimesTamp($(this).html());
+                    $(this).html(localTime);
+                });
+            $("p[name='content']").each(
+                function () {
+                    var innerText = $(this).html();
+                    var replacedText = innerText.replace(new RegExp("\n", "gm"), "<br/>");
+                    $(this).html(replacedText);
+                });
+        });
+        //时间戳转为本地时间
+        function ChangeTimesTamp(time) {
+            var datetime = new Date();
+            datetime.setTime(time * 1000);
+            var year = datetime.getFullYear();
+            var month = datetime.getMonth() + 1;
+            var date = datetime.getDate();
+            var hour = datetime.getHours();
+            var minute = datetime.getMinutes();
+            var second = datetime.getSeconds();
+            return year + "-" + timeTpTwo(month) + "-" + timeTpTwo(date) + " " + timeTpTwo(hour) + ":" + timeTpTwo(minute) + ":" + timeTpTwo(second);
+
+        }
+        function timeTpTwo(s) {
+            return s < 10 ? '0' + s : s;
+        }
+    });
+</script>

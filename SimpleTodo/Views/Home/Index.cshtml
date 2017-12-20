@@ -1,0 +1,144 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1">
+    <title>SimpleToDo</title>
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+    <style type="text/css">
+        .layui-tab ul.layui-tab-title li:nth-child(1) i {
+            display: none;
+        }
+
+        .layui-tab-title {
+            border-bottom-width: 2px;
+            border-bottom-color: #009688;
+        }
+
+            .layui-tab-title .layui-this {
+                background-color: #009688;
+                color: white;
+            }
+
+                .layui-tab-title .layui-this:after {
+                    border-style: none;
+                }
+    </style>
+</head>
+<body class="layui-layout-body">
+    <div class="layui-layout layui-layout-admin">
+        <div class="layui-header">
+            <div class="layui-logo">
+                <i class="layui-icon" style="font-size: 40px; color: #1E9FFF;">&#xe60c;</i>
+                后台管理
+            </div>
+            <ul class="layui-nav layui-layout-right">
+                <li class="layui-nav-item">
+                    <a href="javascript:;">
+                        <img src="http://t.cn/RCzsdCq" class="layui-nav-img">
+                        @User.Identity.Name
+                    </a>
+                    <dl class="layui-nav-child">
+                        <dd><a href="javascript:;">基本资料</a></dd>
+                        <dd><a href="javascript:;">安全设置</a></dd>
+                    </dl>
+                </li>
+                <li class="layui-nav-item"><a href="/Home/Logout">退了</a></li>
+            </ul>
+        </div>
+
+        <div class="layui-side layui-bg-black">
+
+            <div class="layui-side-scroll">
+                <!-- 左侧导航区域（可配合layui已有的垂直导航） -->
+                <ul class="layui-nav layui-nav-tree" lay-filter="MyNavgation">
+                    <li class="layui-nav-item layui-nav-itemed" data-anim="layui-anim-upbit">
+                        <a href="javascript:;">HelloWorld</a>
+                        <dl class="layui-nav-child">
+                            <dd><a href="javascript:;" data-url="/Home/MainPage">主页</a></dd>
+                            <dd><a href="javascript:;" data-url="/Home/TimeLine">时间线</a></dd>
+                            <dd><a href="javascript:;" data-url="/Home/AddTodo">添加待办</a></dd>
+                            <dd><a href="javascript:;" data-url="https://www.baidu.com">百度</a></dd>
+                        </dl>
+                    </li>
+                </ul>
+            </div>
+        </div>
+
+        <div class="layui-body">
+            <!-- 内容主体区域 -->
+            <div class="layui-tab" lay-filter="MyTabs" lay-allowclose="true">
+                <ul class="layui-tab-title">
+                    <li class="layui-this" lay-id="/Home/MainPage">首页</li>
+                </ul>
+                <div class="layui-tab-content">
+                    <div class="layui-tab-item layui-show">
+                        <iframe class="layui-anim layui-anim-upbit" scrolling="auto" frameborder="0" id="form/Home/MainPage" onload="changeFrameHeight()" name="main" src="/Home/MainPage" style="width:100%;height:100%;"></iframe>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="layui-footer">
+            <!-- 底部固定区域 -->
+            © layui.com - 底部固定区域
+        </div>
+    </div>
+    <script src="~/layui/layui.js"></script>
+    <script>
+        function changeFrameHeight() {
+            document.getElementsByClassName("layui-tab-item layui-show").item(0).style.height = "100%";
+            document.getElementsByClassName("layui-tab-item layui-show").item(0).style.width = "100%";
+            document.getElementsByClassName("layui-tab").item(0).style.height = "100%";
+            document.getElementsByClassName("layui-tab").item(0).style.width = "100%";
+            document.getElementsByClassName("layui-tab-content").item(0).style.height = "100%";
+            document.getElementsByClassName("layui-tab-content").item(0).style.width = "100%";
+        }
+        //JavaScript代码区域
+        layui.use('element', function () {
+            var element = layui.element, $ = layui.jquery;
+            element.on('nav(MyNavgation)', function (elem) {
+                var url = elem.context.children[0].dataset.url;
+                var title = elem.context.children[0].text;
+
+                var tab = $(".layui-tab-title").find("li[lay-id='" + url + "']").length;
+                if (tab != 0) {
+                    //切换到当前tab项
+                    element.tabChange('MyTabs', url);
+                    //更新TimeLine
+                    if (url == '/Home/TimeLine') {
+                        document.getElementById('form' + url).contentWindow.location.reload(true);
+                    }
+                } else {
+                    //添加tab页
+                    element.tabAdd('MyTabs', {
+                        title: title,
+                        content: '<iframe scrolling="auto" frameborder="0" id="form' + url + '" class="layui-anim layui-anim-upbit" onload="changeFrameHeight()" src="' + url + '" style="width:100%;height:100%;"></iframe>',
+                        id: url
+                    });
+                    //iframe自适应
+                    $(window).on('resize', function () {
+                        var $content = $('.admin-nav-card .layui-tab-content');
+                        $content.height($(this).height() - 147);
+                        $content.find('iframe').each(function () {
+                            $(this).height($content.height());
+                        });
+                    }).resize();
+                    //根据单击的导航条，切换到对应的tab页面
+                    element.tabChange('MyTabs', url);
+                    
+                }
+            });
+            element.on('tab(MyTabs)', function (data) {
+                if (typeof ($(this).attr('lay-id')) == 'undefined') {
+                    return;
+                }
+                //更新TimeLine
+                if ($(this).attr('lay-id') == '/Home/TimeLine') {
+                    document.getElementById('form' + $(this).attr('lay-id')).contentWindow.location.reload(true);
+                }
+            });
+        });
+    </script>
+</body>
+</html>

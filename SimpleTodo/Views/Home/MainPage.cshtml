@@ -1,0 +1,37 @@
+﻿
+<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>主页</title>
+    <link href="~/layui/css/layui.css" rel="stylesheet" />
+</head>
+<body>
+    <div class="layui-fluid">
+        <div class="layui-row"><h3 id="title">Hello World</h3></div>
+        <div class="layui-row"><a class="layui-btn" id="alink">点击查看详细介绍</a></div>
+        <div class="layui-row"><img id="bingImg" width="1366px" /></div>
+    </div>
+    
+</body>
+</html>
+<script src="~/layui/layui.js"></script>
+<script>
+    layui.use('jquery', function () {
+        var $ = layui.jquery;
+        $(function () {
+            $.ajax({
+                type: "get",
+                url: "https://jsonp.afeld.me/?url=https%3A%2F%2Fcn.bing.com%2FHPImageArchive.aspx%3Fformat%3Djs%26idx%3D-1%26n%3D1",
+                success: function (result) {
+                    var image = result.images[0];
+                    $("#bingImg").attr('src', "https://cn.bing.com" + image.url); 
+                    $("#title").html( image.copyright); 
+                    $("#alink").attr('href',image.copyrightlink.replace("http","https")); 
+                }
+            });
+
+        })
+    });
+</script>
