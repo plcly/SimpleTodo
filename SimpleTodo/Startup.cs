@@ -30,23 +30,7 @@ namespace SimpleTodo
                     options.LogoutPath = "/Home/Logout";
                 });
             services.AddMvc();
-            services.Configure<List<UserModel>>(Configuration.GetSection("UserList"));
-            //services.AddSingleton<List<UserModel>>(factory =>
-            //{
-            //    return new List<UserModel>
-            //    {
-            //        new UserModel
-            //        {
-            //            UserName="admin",
-            //            Password="123!@#"
-            //        },
-            //        new UserModel
-            //        {
-            //            UserName="test",
-            //            Password="test"
-            //        }
-            //    };
-            //});
+            services.Configure<List<UserModel>>(Configuration.GetSection("UserList"));           
         }
 
         // This method gets called by the runtime. Use this method to configure the HTTP request pipeline.
